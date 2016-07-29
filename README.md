@@ -1,20 +1,12 @@
 # PokeWatch
-A twitter bot that uses the Pokemon Go API to find rare pokemon.
+A twitter bot that uses the Pokemon Go API to find rare pokemon. This repo is forked from https://github.com/bunzosteele/PokeWatch
 
-Bellingham, WA PokeWatch: https://twitter.com/BhamPokeWatch
-
-Other known bots running Pokewatch: https://twitter.com/BhamPokeWatch/lists/pokewatchbots
-
-Subreddit: https://reddit.com/r/pokewatch
-
-DOWNLOAD: https://db.tt/wNDXXmgr
+Waterloo, ON PokeWatch: https://twitter.com/loopokewatch
 
 ##Set Up Instructions
 1. GETTING THE FILES:
 
-	a. Download and Pokewatch.zip and extract files (https://db.tt/wNDXXmgr).
-	
-	b. Alternatively, clone and build the repo.
+	a.  Alternatively, clone and build the repo.
 	
 2. CREATING POKEMONGO ACCOUNTS:
 
