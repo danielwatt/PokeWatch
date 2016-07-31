@@ -66,7 +66,7 @@ namespace Pokewatch
 
         private static bool Search()
         {
-            Queue<FoundPokemon> tweetedPokemon = new Queue<FoundPokemon>();
+            List<FoundPokemon> tweetedPokemon = new List<FoundPokemon>();
             DateTime lastTweet = DateTime.MinValue;
             Random random = new Random();
             while (true)
@@ -84,6 +84,16 @@ namespace Pokewatch
                     //Wait so we don't clobber api and to let the heartbeat catch up to our new location. (Minimum heartbeat time is 4000ms)
                     Thread.Sleep(5000);
                     Log("[!]Searching nearby cells.");
+                    if (!tweetedPokemon.IsEmpty())
+                    {
+                        for (int i = 0; i < tweetedPokemon.Count; i++) {
+                            if (tweetedPokemon.ElementAt(i).ExpirationTime < DateTime.Now.ToLocalTime())
+                            {
+                                Log("[!]Tweeted pokemon " + tweetedPokemon.ElementAt(i).Kind + " has expired. Bye!");
+                                tweetedPokemon.RemoveAt(i);                               
+                            }
+                        }
+                    }
                     RepeatedField<MapCell> mapCells;
                     try
                     {
@@ -118,9 +128,9 @@ namespace Pokewatch
                             Log("[+]Tweet published: " + tweet);
                             lastTweet = DateTime.Now;
 
-                            tweetedPokemon.Enqueue(foundPokemon);
+                            tweetedPokemon.Add(foundPokemon);
                             if (tweetedPokemon.Count > 10)
-                                tweetedPokemon.Dequeue();
+                                tweetedPokemon.RemoveAt(0);
                         }
                     }
                 }
@@ -204,13 +214,15 @@ namespace Pokewatch
         }
 
         //Evaluate if a pokemon is worth tweeting about.
-        private static FoundPokemon ProcessPokemon(WildPokemon pokemon, Queue<FoundPokemon> alreadyFound, DateTime lastTweet)
+        private static FoundPokemon ProcessPokemon(WildPokemon pokemon, List<FoundPokemon> alreadyFound, DateTime lastTweet)
         {
             FoundPokemon foundPokemon = new FoundPokemon
             {
                 Location = new Location { Latitude = pokemon.Latitude, Longitude = pokemon.Longitude },
                 Kind = pokemon.PokemonData.PokemonId,
-                LifeExpectancy = pokemon.TimeTillHiddenMs / 1000
+                LifeExpectancy = pokemon.TimeTillHiddenMs / 1000,
+                //There is a better way to do this instead of pokemon.TimeTillHiddenMs/1000. Haven't figured it out.
+                ExpirationTime = DateTime.Now.AddSeconds(pokemon.TimeTillHiddenMs / 1000).ToLocalTime()
             };
 
             if (s_config.ExcludedPokemon.Contains(foundPokemon.Kind))

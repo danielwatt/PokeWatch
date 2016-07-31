@@ -8,6 +8,7 @@ namespace Pokewatch.Datatypes
 		public PokemonId Kind { get; set; }
 		public Location Location { get; set; }
 		public int LifeExpectancy { get; set; }
+        public DateTime ExpirationTime { get; set; }
 
 		public bool Equals(FoundPokemon other)
 		{
